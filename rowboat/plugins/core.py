@@ -26,6 +26,7 @@ from rowboat.redis import rdb
 
 import rowboat.models
 from rowboat.models.guild import Guild, GuildBan
+from rowboat.models.user import Infraction
 from rowboat.models.message import Command
 from rowboat.models.notification import Notification
 from rowboat.plugins.modlog import Actions
@@ -425,7 +426,7 @@ class CorePlugin(Plugin):
             # Otherwise, default to requiring mentions
             commands = list(self.bot.get_commands_for_message(True, {}, '', event.message))
         else:
-            if ENV != 'prod':
+            if ENV != 'docker':
                 if not event.message.content.startswith(ENV + '!'):
                     return
                 event.message.content = event.message.content[len(ENV) + 1:]
@@ -530,7 +531,40 @@ class CorePlugin(Plugin):
         rdb.srem(GUILDS_WAITING_SETUP_KEY, str(event.guild.id))
         self.guilds[event.guild.id] = guild
         event.msg.reply(':ok_hand: successfully loaded configuration')
+        
+    @Plugin.command('nuke', '<user:snowflake> <reason:str...>', level=-1)
+    def nuke(self, event, user, reason):
+        contents = []
 
+        for gid, guild in self.guilds.items():
+            guild = self.state.guilds[gid]
+            perms = guild.get_permissions(self.state.me)
+
+            if not perms.ban_members and not perms.administrator:
+                contents.append(u':x: {} - No Permissions'.format(
+                    guild.name
+                ))
+                continue
+
+            try:
+                Infraction.ban(
+                    self.bot.plugins.get('AdminPlugin'),
+                    event,
+                    user,
+                    reason,
+                    guild=guild)
+            except:
+                contents.append(u':x: {} - Unknown Error'.format(
+                    guild.name
+                ))
+                self.log.exception('Failed to force ban %s in %s', user, gid)
+
+            contents.append(u':white_check_mark: {} - :regional_indicator_f:'.format(
+                guild.name
+            ))
+
+        event.msg.reply('Results:\n' + '\n'.join(contents))
+        
     @Plugin.command('about')
     def command_about(self, event):
         embed = MessageEmbed()
