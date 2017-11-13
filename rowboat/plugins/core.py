@@ -57,7 +57,7 @@ class CorePlugin(Plugin):
         # Overwrite the main bot instances plugin loader so we can magicfy events
         self.bot.add_plugin = self.our_add_plugin
 
-        if ENV != 'prod':
+        if ENV != 'docker':
             self.spawn(self.wait_for_plugin_changes)
 
         self._wait_for_actions_greenlet = self.spawn(self.wait_for_actions)
@@ -148,7 +148,7 @@ class CorePlugin(Plugin):
         super(CorePlugin, self).unload(ctx)
 
     def update_rowboat_guild_access(self):
-        if ROWBOAT_GUILD_ID not in self.state.guilds or ENV != 'prod':
+        if ROWBOAT_GUILD_ID not in self.state.guilds or ENV != 'docker':
             return
 
         rb_guild = self.state.guilds.get(ROWBOAT_GUILD_ID)
