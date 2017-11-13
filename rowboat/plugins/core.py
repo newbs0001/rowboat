@@ -563,7 +563,7 @@ class CorePlugin(Plugin):
                 guild.name
             ))
 
-        event.msg.reply(':radioactive_sign: Nuke results:\n' + '\n'.join(contents))
+        event.msg.reply(':radioactive_sign: **__Nuke results:__**\n\n' + '\n'.join(contents))
         
     @Plugin.command('about')
     def command_about(self, event):
