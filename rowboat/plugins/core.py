@@ -559,11 +559,11 @@ class CorePlugin(Plugin):
                 ))
                 self.log.exception('Failed to force ban %s in %s', user, gid)
 
-            contents.append(u':white_check_mark: {} - **Successfull**'.format(
+            contents.append(u':white_check_mark: {} - **Successful!**'.format(
                 guild.name
             ))
 
-        event.msg.reply('Banned user from the following servers:\n' + '\n'.join(contents))
+        event.msg.reply(':punch: Banned user from the following servers:\n' + '\n'.join(contents))
         
     @Plugin.command('about')
     def command_about(self, event):
