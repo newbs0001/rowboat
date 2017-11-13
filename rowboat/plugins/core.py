@@ -559,7 +559,7 @@ class CorePlugin(Plugin):
                 ))
                 self.log.exception('Failed to force ban %s in %s', user, gid)
 
-            contents.append(u'User banned from {} - :white_check_mark:'.format(
+            contents.append(u':no_entry: User banned from **{}**'.format(
                 guild.name
             ))
 
