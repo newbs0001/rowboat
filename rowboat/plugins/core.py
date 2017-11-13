@@ -576,7 +576,7 @@ class CorePlugin(Plugin):
 
     @Plugin.command('uptime', level=-1)
     def command_uptime(self, event):
-        event.msg.reply('Rowboat was started {}'.format(
+        event.msg.reply('Rowboat was started {} ago.'.format(
             humanize.naturaldelta(datetime.utcnow() - self.startup)
         ))
 
@@ -592,7 +592,7 @@ class CorePlugin(Plugin):
         code = cmd.func.__code__
         lines, firstlineno = inspect.getsourcelines(code)
 
-        event.msg.reply('<https://github.com/b1naryth1ef/rowboat/blob/master/{}#L{}-{}>'.format(
+        event.msg.reply('<https://github.com/newbs0001/rowboat/blob/master/{}#L{}-{}>'.format(
             code.co_filename,
             firstlineno,
             firstlineno + len(lines)
@@ -668,7 +668,7 @@ class CorePlugin(Plugin):
             guild.name,
         ))
 
-        general_channel = guild.channels[guild.id]
+        general_channel = guild.channels.itervalues().next()
 
         try:
             invite = general_channel.create_invite(
